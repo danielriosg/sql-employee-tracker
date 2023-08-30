@@ -59,15 +59,56 @@ function startApp() {
     });
 }
 
-// Define the viewDepartments function
 function viewDepartments() {
-  // SQL query to retrieve departments will be added here
+  const query = "SELECT id, name FROM department";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error retrieving departments:", err);
+      return;
+    }
+    console.table(results); // Display the retrieved data
+    startApp(); // Go back to the main menu
+  });
 }
 
-// Define the viewRoles function
 function viewRoles() {
-  // SQL query to retrieve roles will be added here
+  const query = `
+    SELECT role.id, role.title, role.salary, department.name AS department
+    FROM role
+    INNER JOIN department ON role.department_id = department.id
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error retrieving roles:", err);
+      return;
+    }
+    console.table(results); // Display the retrieved data
+    startApp(); // Go back to the main menu
+  });
 }
+
+function viewEmployees() {
+  const query = `
+    SELECT employee.id, employee.first_name, employee.last_name,
+      role.title, role.salary, department.name AS department,
+      CONCAT(manager.first_name, ' ', manager.last_name) AS manager
+    FROM employee
+    INNER JOIN role ON employee.role_id = role.id
+    INNER JOIN department ON role.department_id = department.id
+    LEFT JOIN employee AS manager ON employee.manager_id = manager.id
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error retrieving employees:", err);
+      return;
+    }
+    console.table(results); // Display the retrieved data
+    startApp(); // Go back to the main menu
+  });
+}
+
 
 // Define the exitApp function
 function exitApp() {
