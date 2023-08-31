@@ -54,6 +54,10 @@ function startApp() {
         case "Add a department":
           addDepartment();
           break;
+        case "Add a role":
+          addRole();
+          break;
+
         // Add cases for other choices
         case "Exit":
           exitApp();
@@ -136,7 +140,40 @@ function addDepartment() {
       });
     });
 }
+// Define the addRole function
+function addRole() {
+  // Prompt the user for role details
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "title",
+        message: "Enter the title of the new role:",
+      },
+      {
+        type: "input",
+        name: "salary",
+        message: "Enter the salary of the new role:",
+        validate: (value) => !isNaN(value) || "Please enter a valid number",
+      },
+      // Prompt for department here
+    ])
+    .then((roleAnswers) => {
+      // Add prompt for department here
+      const { title, salary, departmentId } = roleAnswers;
 
+      // Execute SQL query to insert role
+      const query = "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)";
+      db.query(query, [title, salary, departmentId], (err, result) => {
+        if (err) {
+          console.error("Error adding role:", err);
+          return;
+        }
+        console.log("Role added successfully!");
+        startApp(); // Go back to the main menu
+      });
+    });
+}
 // Define the exitApp function
 function exitApp() {
   console.log("Exiting the application.");
