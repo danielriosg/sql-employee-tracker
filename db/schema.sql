@@ -9,9 +9,11 @@ USE employee_db;
 
 -- Create the department table
 CREATE TABLE department (
-  id INT PRIMARY KEY,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(30)
 );
+
+
 
 -- Create the role table
 CREATE TABLE role (

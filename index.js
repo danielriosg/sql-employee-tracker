@@ -130,9 +130,8 @@ function addDepartment() {
     })
     .then((answers) => {
       const departmentName = answers.departmentName;
-
       // Execute the SQL INSERT query
-      const query = "INSERT INTO department (name) VALUES (?)";
+      const query = "INSERT INTO department (id, name) VALUES (1, ?)";
       db.query(query, [departmentName], (err, result) => {
         if (err) {
           console.error("Error adding department:", err);
@@ -143,6 +142,7 @@ function addDepartment() {
       });
     });
 }
+
 // Define the addRole function
 function addRole() {
   // Prompt the user for role details
