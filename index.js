@@ -57,6 +57,9 @@ function startApp() {
         case "Add a role":
           addRole();
           break;
+        case "Add an employee":
+          addEmployee();
+          break;
 
         // Add cases for other choices
         case "Exit":
@@ -174,6 +177,52 @@ function addRole() {
       });
     });
 }
+// Define the addEmployee function
+function addEmployee() {
+  // Prompt the user for employee details
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "firstName",
+        message: "Enter the first name of the new employee:",
+      },
+      {
+        type: "input",
+        name: "lastName",
+        message: "Enter the last name of the new employee:",
+      },
+      // Prompt for role here
+      {
+        type: "input",
+        name: "roleId",
+        message: "Enter the role ID of the new employee:",
+        validate: (value) => !isNaN(value) || "Please enter a valid number",
+      },
+      // Prompt for manager here
+      {
+        type: "input",
+        name: "managerId",
+        message: "Enter the manager ID of the new employee (if applicable):",
+        validate: (value) => value === "" || !isNaN(value) || "Please enter a valid number",
+      },
+    ])
+    .then((employeeAnswers) => {
+      const { firstName, lastName, roleId, managerId } = employeeAnswers;
+
+      // Execute SQL query to insert employee
+      const query = "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)";
+      db.query(query, [firstName, lastName, roleId, managerId], (err, result) => {
+        if (err) {
+          console.error("Error adding employee:", err);
+          return;
+        }
+        console.log("Employee added successfully!");
+        startApp(); // Go back to the main menu
+      });
+    });
+}
+
 // Define the exitApp function
 function exitApp() {
   console.log("Exiting the application.");
