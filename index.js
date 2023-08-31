@@ -48,6 +48,12 @@ function startApp() {
         case "View all roles":
           viewRoles();
           break;
+        case "View all employees":
+          viewEmployees(); // Add this line
+          break;
+        case "Add a department":
+          addDepartment();
+          break;
         // Add cases for other choices
         case "Exit":
           exitApp();
@@ -108,7 +114,28 @@ function viewEmployees() {
     startApp(); // Go back to the main menu
   });
 }
+function addDepartment() {
+  inquirer
+    .prompt({
+      type: "input",
+      name: "departmentName",
+      message: "Enter the name of the new department:",
+    })
+    .then((answers) => {
+      const departmentName = answers.departmentName;
 
+      // Execute the SQL INSERT query
+      const query = "INSERT INTO department (name) VALUES (?)";
+      db.query(query, [departmentName], (err, result) => {
+        if (err) {
+          console.error("Error adding department:", err);
+          return;
+        }
+        console.log("Department added successfully!");
+        startApp(); // Go back to the main menu
+      });
+    });
+}
 
 // Define the exitApp function
 function exitApp() {
