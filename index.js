@@ -159,14 +159,19 @@ function addRole() {
         message: "Enter the salary of the new role:",
         validate: (value) => !isNaN(value) || "Please enter a valid number",
       },
-      // Prompt for department here
+      {
+        type: "input",
+        name: "departmentId",
+        message: "Enter the department ID for this role:",
+        validate: (value) => !isNaN(value) || "Please enter a valid number",
+      },
     ])
     .then((roleAnswers) => {
-      // Add prompt for department here
       const { title, salary, departmentId } = roleAnswers;
 
       // Execute SQL query to insert role
-      const query = "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)";
+      const query =
+        "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)";
       db.query(query, [title, salary, departmentId], (err, result) => {
         if (err) {
           console.error("Error adding role:", err);
@@ -177,6 +182,7 @@ function addRole() {
       });
     });
 }
+
 // Define the addEmployee function
 function addEmployee() {
   // Prompt the user for employee details
