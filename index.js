@@ -131,7 +131,7 @@ function addDepartment() {
     .then((answers) => {
       const departmentName = answers.departmentName;
       // Execute the SQL INSERT query
-      const query = "INSERT INTO department (id, name) VALUES (1, ?)";
+      const query = "INSERT INTO department (name) VALUES (?)";
       db.query(query, [departmentName], (err, result) => {
         if (err) {
           console.error("Error adding department:", err);
