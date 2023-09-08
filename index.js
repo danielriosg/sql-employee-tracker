@@ -102,15 +102,28 @@ function viewRoles() {
 }
 
 function viewEmployees() {
-  const query = `
-    SELECT employee.id, employee.first_name, employee.last_name,
-      role.title, role.salary, department.name AS department,
-      CONCAT(manager.first_name, ' ', manager.last_name) AS manager
-    FROM employee
-    INNER JOIN role ON employee.role_id = role.id
-    INNER JOIN department ON role.department_id = department.id
-    LEFT JOIN employee AS manager ON employee.manager_id = manager.id
-  `;
+
+const query = `
+SELECT employee.id, employee.first_name, employee.last_name,
+  role.title, role.salary, department.name AS department, employee.manager_name
+FROM employee
+INNER JOIN role ON employee.role_id = role.id
+INNER JOIN department ON role.department_id = department.id
+`;
+
+
+
+//   const query = `
+//   SELECT employee.id, employee.first_name, employee.last_name,
+// role.title, role.salary, department.name AS department,
+// CONCAT(manager.first_name, ' ', manager.last_name) AS manager
+// FROM employee
+// INNER JOIN role ON employee.role_id = role.id
+// INNER JOIN department ON role.department_id = department.id
+// LEFT JOIN employee AS manager ON employee.manager_name = manager.first_name;
+// `;
+
+
 
   db.query(query, (err, results) => {
     if (err) {
@@ -198,36 +211,40 @@ function addEmployee() {
         name: "lastName",
         message: "Enter the last name of the new employee:",
       },
-      // Prompt for role here
       {
         type: "input",
         name: "roleId",
         message: "Enter the role ID of the new employee:",
         validate: (value) => !isNaN(value) || "Please enter a valid number",
       },
-      // Prompt for manager here
       {
         type: "input",
-        name: "managerId",
-        message: "Enter the manager ID of the new employee (if applicable):",
-        validate: (value) => value === "" || !isNaN(value) || "Please enter a valid number",
+        name: "managerName", // Prompt for manager's name
+        message:
+          "Enter the manager's full name of the new employee (if applicable):",
       },
     ])
     .then((employeeAnswers) => {
-      const { firstName, lastName, roleId, managerId } = employeeAnswers;
+      const { firstName, lastName, roleId, managerName } = employeeAnswers;
 
       // Execute SQL query to insert employee
-      const query = "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)";
-      db.query(query, [firstName, lastName, roleId, managerId], (err, result) => {
-        if (err) {
-          console.error("Error adding employee:", err);
-          return;
+      const query =
+        "INSERT INTO employee (first_name, last_name, role_id, manager_name) VALUES (?, ?, ?, ?)";
+      db.query(
+        query,
+        [firstName, lastName, roleId, managerName],
+        (err, result) => {
+          if (err) {
+            console.error("Error adding employee:", err);
+            return;
+          }
+          console.log("Employee added successfully!");
+          startApp(); // Go back to the main menu
         }
-        console.log("Employee added successfully!");
-        startApp(); // Go back to the main menu
-      });
+      );
     });
 }
+
 
 // Define the exitApp function
 function exitApp() {
